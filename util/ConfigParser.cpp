@@ -96,13 +96,18 @@ void ConfigParser::parseConfigFile(const std::string& configFilePath)
             catch (const std::invalid_argument& ia) {
             }
 
-            auto& keySet = getKeySetForKeyName(keyName);
-            auto& specificKey = getKeyForKeyName(keySet, keyName);
-            const auto value = std::stoul(keyValue, nullptr /* idx */, 16 /* base */);
-            specificKey = value;
+            try
+            {
+                auto& keySet = getKeySetForKeyName(keyName);
+                auto& specificKey = getKeyForKeyName(keySet, keyName);
+                const auto value = std::stoul(keyValue, nullptr /* idx */, 16 /* base */);
+                specificKey = value;
+                continue;
+            }
+            catch (const std::invalid_argument& ia) {
+            }
 
-            // Debug
-            // std::cout << keyName << ": " << value << " (" << keyValue << ")" << std::endl;
+            std::cerr << "ConfigParser does not understand this: " << keyName << " " << keyValue << std::endl;
         }
     }
 
